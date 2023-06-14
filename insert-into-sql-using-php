@@ -1,0 +1,62 @@
+<html>
+<body>
+ 
+<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
+  Rollno: <input type="text" name="rollno" /><br>
+  T.Y.B.Tech (CSE)- II Subject: Web Technologies<br>
+  Name: <input type="text" name="name" /><br>
+  Class: <input type="text" name="class" /><br>
+  <input type="submit" />
+</form>
+</body>
+</html>
+
+<?php
+$servername = "localhost";
+$username = "root";
+$password = "";
+$database = "db_new3";
+
+$conn = mysqli_connect($servername, $username, $password, $database);
+if (!$conn){
+    die("Sorry, we failed to connect: " . mysqli_connect_error());
+} else {
+    echo "Connection was successful<br>";
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['name'])==true  && isset($_POST['class']) && isset($_POST['rollno'])) {
+   
+        $name = $_POST['name'];
+        $class = $_POST['class'];
+        $rollno = $_POST['rollno'];
+
+        $sql = "INSERT INTO cse3 (rollno, name, class) VALUES ('$rollno', '$name', '$class')";
+
+        $result = mysqli_query($conn, $sql);
+
+        if ($result) {
+            if(!empty($_POST['name']))
+              echo "The record has been inserted successfully!<br>";
+
+            $selectSql = "SELECT * FROM cse3 WHERE rollno = '$rollno'";
+            $selectResult = mysqli_query($conn, $selectSql);
+
+            if ($selectResult && mysqli_num_rows($selectResult) > 0) {
+                $row = mysqli_fetch_assoc($selectResult);
+                echo "Inserted Record:<br>";
+                echo "Rollno: " . $row['rollno'] . "<br>";
+                echo "Name: " . $row['name'] . "<br>";
+                echo "Class: " . $row['class'] . "<br>";
+            } else {
+                echo "Failed to retrieve the inserted record.";
+            }
+        } else {
+            echo "Error: " . mysqli_error($conn);
+        }
+    } 
+    else {
+        echo "Please insert some data";
+    }
+    
+
+?>
